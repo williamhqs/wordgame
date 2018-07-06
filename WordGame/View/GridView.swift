@@ -11,7 +11,8 @@ import UIKit
 final class GridView: UIView {
     private var charaterNodes = [[UILabel]]()
     private var selectedCharacterNodes = [UILabel]()
-    private var selectedCharacterPoints = [String]()
+    
+    var viewModel = GridViewModel()
     var width: CGFloat = 0
     var sourceWord: Word? {
         didSet {
@@ -59,58 +60,45 @@ extension GridView {
     private func changeNodeStatus(node: UILabel, selected: Bool) {
         node.backgroundColor = selected ? UIColor.blue : UIColor.red
     }
-    
-    private func generateSelectedWordKey(_ position:(Int, Int)) -> String {
-        return String(position.0)+","+String(position.1)+","
-    }
-    
+
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         guard let touch = touches.first else {
             return
         }
-        
         let touchlocation = touch.location(in: self)
         let position = nodeLocation(touchlocation)
-        guard let l = findCurrentSelectedNode(position) else {
+        guard let node = findCurrentSelectedNode(position) else {
             return
         }
 //        print("\(x)--\(y)--\(l.text)")
-        changeNodeStatus(node: l, selected: true)
-        
-        if !selectedCharacterNodes.contains(l) {
-            selectedCharacterNodes.append(l)
-        }
-        let locationString = generateSelectedWordKey(position)
-        if !selectedCharacterPoints.contains(locationString) {
-            selectedCharacterPoints.append(locationString)
+        changeNodeStatus(node: node, selected: true)
+        addSelectedNode(node)
+        viewModel.addNodePosition(position)
+    }
+    
+    private func addSelectedNode(_ node: UILabel) {
+        if !selectedCharacterNodes.contains(node) {
+            selectedCharacterNodes.append(node)
         }
     }
     
-    func generateSelectedWord() -> [String:String]? {
-        var finalKey = selectedCharacterPoints.reduce("", + )
-        guard !finalKey.isEmpty else {
+    private func generateSelectedValue() -> String? {
+        let value = selectedCharacterNodes.compactMap{$0.text}.reduce("", + )
+        guard !value.isEmpty else {
             return .none
         }
-        finalKey.removeLast()
-        
-        let finalValue = selectedCharacterNodes.compactMap{$0.text}.reduce("", + )
-        
-        guard !finalValue.isEmpty else {
-            return .none
-        }
-        return [finalKey:finalValue]
+        return value
     }
-    
     func checkSelectedWordCorrect() -> Bool {
-        guard let sourceWord = sourceWord, let selectedWord = generateSelectedWord(), selectedWord == sourceWord.word_locations else {
+        guard let sourceWord = sourceWord, let selectedWordValue = generateSelectedValue(), let selectedWord = viewModel.generateSelectedWord(by: selectedWordValue), selectedWord == sourceWord.word_locations else {
             return false
         }
         return true
     }
     
     func resetStatus() {
-        selectedCharacterPoints.removeAll()
+        viewModel.selectedCharacterPoints.removeAll()
         UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
             self.selectedCharacterNodes.forEach {
                 self.changeNodeStatus(node: $0, selected: false)

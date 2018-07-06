@@ -82,9 +82,7 @@ class ViewController: UIViewController {
         word.character_grid.enumerated().forEach { (yOffset, element) in
             var la = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
-                
-                let b = UILabel(frame: CGRect(x: CGFloat(yOffset) * width, y: CGFloat(xOffset) * width, width: width, height: width))
-                print("\(xOffset), \(yOffset)")
+                let b = UILabel(frame: CGRect(x: CGFloat(xOffset) * width, y: CGFloat(yOffset) * width, width: width, height: width))
                 b.backgroundColor = UIColor.red
                 b.text = element
                 la.append(b)
@@ -95,7 +93,7 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("Touch begin")
+        
         guard let touch = touches.first, touch.view == gridView else {
             return
         }
@@ -116,20 +114,39 @@ class ViewController: UIViewController {
         let x = Int((location.x / width).rounded(.down))
         let y = Int((location.y / width).rounded(.down))
         
-      
-        
-        let l = labels[x][y]
-        print("\(x) --- \(y)----\(l.text)")
+        let l = labels[y][x]
+        print("\(x)--\(y)--\(l.text)")
         l.backgroundColor = UIColor.blue
-        selected.insert(l)
+        if !selected.contains(l) {
+            selected.append(l)
+        }
+        let locationString = String(x)+","+String(y)+","
+        if !points.contains(locationString) {
+            points.append(locationString)
+        }
+        
+        
     }
-    var selected = Set<UILabel>()
+    var selected = [UILabel]()
+    var points = [String]()
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         print(selected.count)
-        let final = selected.reduce("") { b, s in
-            b + "," + String(s.tag)
+        print(targetWord!.word_locations)
+        var finalKey = points.reduce("", + )
+        
+//        let finalValue = selected.reduce("", { $0 + $1.text!})
+        let finalValue = selected.compactMap{$0.text}.reduce("", + )
+        print(finalValue)
+        if !finalKey.isEmpty {
+            finalKey.removeLast()
         }
-        print(final)
+        
+        print([finalKey : finalValue])
+        if [finalKey : finalValue] == targetWord!.word_locations {
+            print("Correct word: Next")
+        }
+        points.removeAll()
         UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
             self.selected.forEach {
                 $0.backgroundColor = UIColor.red

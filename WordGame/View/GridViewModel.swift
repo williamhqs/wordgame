@@ -16,7 +16,7 @@ enum WordCorrect {
 
 final class GridViewModel {
     
-    private var currentIndex: Int = 1
+    private var currentIndex: Int = -1
     private var correctWords = [String]()
     var thisTimeCorrect = false
     var selectedCharacterPoints = [String]()

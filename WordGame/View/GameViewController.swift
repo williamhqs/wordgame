@@ -13,18 +13,14 @@ class GameViewController: UIViewController {
     @IBOutlet weak var targetLanguage: UILabel!
     @IBOutlet weak var sourceWord: UILabel!
     @IBOutlet weak var targetWord: UILabel!
+    @IBOutlet weak var gridView: GridView!
     
     let viewModel = GameViewModel()
-    var gridView = GridView()
     
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(self.gridView)
         
-        viewModel.wordsLoaded = {
-            self.gridView.viewModel.words = self.viewModel.words
-            self.configureWordInformations(word: self.gridView.sourceWord)
-        }
         viewModel.loadWords()
         
         gridView.viewModel.nextWordLoad = { nextWord in
@@ -34,8 +30,13 @@ class GameViewController: UIViewController {
         gridView.viewModel.currentCorrectTargeWord = { targetWord in
             self.configureTargetWord(word: targetWord)
         }
+        
+        viewModel.wordsLoaded = {
+            self.gridView.viewModel.words = self.viewModel.words
+            self.configureWordInformations(word: self.gridView.sourceWord)
+        }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -45,8 +46,6 @@ class GameViewController: UIViewController {
         self.sourceLanguage.text = word?.source_language
         self.targetLanguage.text = word?.target_language
         self.sourceWord.text = word?.word
-        
-        self.sourceLanguage.text = word?.word_locations.values.reduce("", { $0 + "|" + $1} )
     }
     
     private func configureTargetWord(word: String) {
@@ -58,5 +57,6 @@ class GameViewController: UIViewController {
             self.targetWord.text = ""
         })
     }
+
 }
 

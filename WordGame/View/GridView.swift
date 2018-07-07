@@ -25,6 +25,7 @@ final class GridView: UIView {
     
     var sourceWord: Word? {
         didSet {
+            layoutSubviews()
             updateCharacterNodes()
         }
     }
@@ -48,7 +49,14 @@ final class GridView: UIView {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if let sw = sourceWord {
+            nodeWidth = (self.frame.width - gridSpace * CGFloat(sw.character_grid.count + 1))/CGFloat(sw.character_grid.count)
+        }
     }
     
     // MARK: - Private Methods
@@ -56,10 +64,6 @@ final class GridView: UIView {
         guard let sourceWord = sourceWord else {
             return
         }
-        
-        let count = sourceWord.character_grid.count
-        nodeWidth = (UIScreen.main.bounds.width - gridSpace * CGFloat(count + 1))/CGFloat(count)
-        frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
         sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
             var labels = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
@@ -97,7 +101,7 @@ final class GridView: UIView {
         return value
     }
     
-    func resetToNextStatus() {
+    private func resetToNextStatus() {
         self.lastActionFinished = false
         UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
             self.selectedCharacterNodes.forEach {

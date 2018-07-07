@@ -55,7 +55,7 @@ final class GridView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if let sw = sourceWord {
-            nodeWidth = (self.frame.width - gridSpace * CGFloat(sw.character_grid.count + 1))/CGFloat(sw.character_grid.count)
+            nodeWidth = (self.frame.width - gridSpace * CGFloat(sw.characterGrid.count + 1))/CGFloat(sw.characterGrid.count)
         }
     }
     
@@ -69,7 +69,7 @@ final class GridView: UIView {
         verticalStack.distribution  = UIStackViewDistribution.fillEqually
         verticalStack.alignment = UIStackViewAlignment.fill
         verticalStack.spacing   = gridSpace
-        sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
+        sourceWord.characterGrid.enumerated().forEach { (yOffset, element) in
             var labels = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
                 let node = self.setupCharacterNode(frame: .zero)

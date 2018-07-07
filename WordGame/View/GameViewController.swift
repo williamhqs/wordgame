@@ -43,8 +43,8 @@ class GameViewController: UIViewController {
     
     // MARK: - Private Methods
     private func configureWordInformations(word: Word?) {
-        self.sourceLanguage.text = word?.source_language
-        self.targetLanguage.text = word?.target_language
+        self.sourceLanguage.text = word?.sourceLanguage
+        self.targetLanguage.text = word?.targetLanguage
         self.sourceWord.text = word?.word
     }
     

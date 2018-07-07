@@ -68,7 +68,7 @@ final class GridViewModel {
     func checkSelectedWordCorrect(_ selectedWordValue: String) -> WordCorrect{
         let currectWord = words[currentIndex]
         let key = generateSelectedKey()
-        if currectWord.word_locations[key!] == selectedWordValue {
+        if currectWord.wordLocations[key!] == selectedWordValue {
             if !correctWords.contains(selectedWordValue) {
                 thisTimeCorrect = true
                 correctWords.append(selectedWordValue)
@@ -80,7 +80,7 @@ final class GridViewModel {
             return correctWords.count > 0 ? .part : .not
         }
         
-        if correctWords.count == currectWord.word_locations.count {
+        if correctWords.count == currectWord.wordLocations.count {
             correctWords.removeAll()
             return .all
         } else {
@@ -99,13 +99,13 @@ final class GridViewModel {
     }
     
     func showCorrectTargetWord() {
-        if let wordString = words[currentIndex].word_locations.values.first {
+        if let wordString = words[currentIndex].wordLocations.values.first {
             currentCorrectTargeWord?(wordString)
         }
     }
     
     func showNextSourceWord() {
-        if let wordString = words[currentIndex].word_locations.values.first {
+        if let wordString = words[currentIndex].wordLocations.values.first {
             currentCorrectTargeWord?(wordString)
         }
     }

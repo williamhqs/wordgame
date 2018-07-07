@@ -14,6 +14,8 @@ final class GridView: UIView {
     
     var viewModel = GridViewModel()
     var width: CGFloat = 0
+    let space: CGFloat = 10
+    
     var sourceWord: Word? {
         didSet {
             updateCharacterNodes()
@@ -34,6 +36,7 @@ final class GridView: UIView {
         viewModel.newSourceWord = { [unowned self] word in
             self.sourceWord = word
         }
+        self.backgroundColor = UIColor.darkGray
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -43,13 +46,18 @@ final class GridView: UIView {
         guard let sourceWord = sourceWord else {
             return
         }
-        self.clearAllNodes()
-        width = UIScreen.main.bounds.width/CGFloat(sourceWord.character_grid.count)
-        frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: CGFloat(sourceWord.character_grid.count) * width)
+        self.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+        charaterNodes.removeAll()
+        
+        let count = sourceWord.character_grid.count
+        width = (UIScreen.main.bounds.width - space * CGFloat(count + 1))/CGFloat(sourceWord.character_grid.count)
+        frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: CGFloat(count) * (width + space) + space)
         sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
             var la = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
-                let b = UILabel(frame: CGRect(x: CGFloat(xOffset) * width, y: CGFloat(yOffset) * width, width: width, height: width))
+                let b = UILabel(frame: CGRect(x: space + CGFloat(xOffset) * (width + space), y: space + CGFloat(yOffset) * (width + space), width: width, height: width))
                 b.layer.backgroundColor = UIColor.gray.cgColor
                 b.textColor = UIColor.white
                 b.textAlignment = .center
@@ -66,9 +74,15 @@ final class GridView: UIView {
 // MARK: - Touches
 extension GridView {
     
+    private func nodeLocation1(_ point: CGPoint) -> (Int, Int){
+        let x = Int(((point.x - space) / (width + space)).rounded(.down))
+        let y = Int(((point.y - space) / (width + space)).rounded(.down))
+        return (x,y)
+    }
+    
     private func nodeLocation(_ point: CGPoint) -> (Int, Int){
-        let x = Int((point.x / width).rounded(.down))
-        let y = Int((point.y / width).rounded(.down))
+        let x = Int(((point.x - space) / (width + space)).rounded(.down))
+        let y = Int(((point.y - space) / (width + space)).rounded(.down))
         return (x,y)
     }
     

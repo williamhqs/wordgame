@@ -43,8 +43,7 @@ final class GridView: UIView {
         guard let sourceWord = sourceWord else {
             return
         }
-        charaterNodes.removeAll()
-        
+        self.clearAllNodes()
         width = UIScreen.main.bounds.width/CGFloat(sourceWord.character_grid.count)
         frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: CGFloat(sourceWord.character_grid.count) * width)
         sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
@@ -54,6 +53,7 @@ final class GridView: UIView {
                 b.layer.backgroundColor = UIColor.gray.cgColor
                 b.textColor = UIColor.white
                 b.textAlignment = .center
+                b.font = UIFont.systemFont(ofSize: 25.0)
                 b.text = element
                 la.append(b)
                 addSubview(b)
@@ -165,8 +165,6 @@ extension GridView {
             break
         case .all:
             resetStatusCorrect()
-//            viewModel.showCorrectTargetWord()
-//            viewModel.next()
         }
     }
     

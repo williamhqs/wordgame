@@ -64,17 +64,33 @@ final class GridView: UIView {
         guard let sourceWord = sourceWord else {
             return
         }
+        let stackView1   = UIStackView()
+        stackView1.axis  = UILayoutConstraintAxis.vertical
+        stackView1.distribution  = UIStackViewDistribution.fillEqually
+        stackView1.alignment = UIStackViewAlignment.fill
+        stackView1.spacing   = gridSpace
         sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
             var labels = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
-                let nodeFrame = CGRect(x: gridSpace + CGFloat(xOffset) * (nodeWidth + gridSpace), y: gridSpace + CGFloat(yOffset) * (nodeWidth + gridSpace), width: nodeWidth, height: nodeWidth)
-                let node = self.setupCharacterNode(frame: nodeFrame)
+                let node = self.setupCharacterNode(frame: .zero)
                 node.text = element
                 labels.append(node)
-                addSubview(node)
+//                addSubview(node)
             })
+            let stackView   = UIStackView(arrangedSubviews: labels)
+            stackView.axis  = UILayoutConstraintAxis.horizontal
+            stackView.distribution  = UIStackViewDistribution.fillEqually
+            stackView.alignment = UIStackViewAlignment.fill
+            stackView.spacing   = gridSpace
+            stackView1.addArrangedSubview(stackView)
             charaterNodes.append(labels)
         }
+        self.addSubview(stackView1)
+        stackView1.translatesAutoresizingMaskIntoConstraints = false
+        stackView1.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: gridSpace).isActive = true
+        stackView1.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -gridSpace).isActive = true
+        stackView1.topAnchor.constraint(equalTo: self.topAnchor, constant: gridSpace).isActive = true
+        stackView1.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -gridSpace).isActive = true
     }
     
     private func setupCharacterNode(frame: CGRect) -> UILabel {
@@ -214,7 +230,9 @@ extension GridView {
         guard let node = findCurrentSelectedNode(position) else {
             return
         }
-        let virtualFrame = UIEdgeInsetsInsetRect(node.frame, UIEdgeInsetsMake(virtalSpace, virtalSpace, 0, 0))
+        
+        let relativeGridFrame = CGRect(x: node.frame.minX, y: node.frame.width * CGFloat(position.1), width: node.frame.width, height: node.frame.height)
+        let virtualFrame = UIEdgeInsetsInsetRect(relativeGridFrame, UIEdgeInsetsMake(virtalSpace, virtalSpace, 0, 0))
         guard virtualFrame.contains(touchlocation) else {
             return
         }

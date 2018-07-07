@@ -20,6 +20,25 @@ final class GridView: UIView {
         }
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        initSetup()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
+        initSetup()
+    }
+    
+    private func initSetup() {
+        viewModel.newSourceWord = { [unowned self] word in
+            self.sourceWord = word
+        }
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    // MARK: - t
     func updateCharacterNodes() {
         guard let sourceWord = sourceWord else {
             return
@@ -32,7 +51,9 @@ final class GridView: UIView {
             var la = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
                 let b = UILabel(frame: CGRect(x: CGFloat(xOffset) * width, y: CGFloat(yOffset) * width, width: width, height: width))
-                b.backgroundColor = UIColor.red
+                b.layer.backgroundColor = UIColor.gray.cgColor
+                b.textColor = UIColor.white
+                b.textAlignment = .center
                 b.text = element
                 la.append(b)
                 addSubview(b)
@@ -42,6 +63,7 @@ final class GridView: UIView {
     }
 }
 
+// MARK: - Touches
 extension GridView {
     
     private func nodeLocation(_ point: CGPoint) -> (Int, Int){
@@ -51,14 +73,27 @@ extension GridView {
     }
     
     private func findCurrentSelectedNode(_ location: (Int, Int)) -> UILabel? {
-        guard let firstNode = charaterNodes.first,  location.0 < firstNode.count-1, location.1 < charaterNodes.count-1 else {
+        guard let firstNode = charaterNodes.first,  location.0 < firstNode.count, location.1 < charaterNodes.count else {
             return .none
         }
         return charaterNodes[location.1][location.0]
     }
     
-    private func changeNodeStatus(node: UILabel, selected: Bool) {
-        node.backgroundColor = selected ? UIColor.blue : UIColor.red
+    private func changeNodeStatus(node: UILabel, correct: WordCorrect) {
+        var color: UIColor
+        switch correct {
+        case .not:
+            color = UIColor.red
+        case .part:
+            if viewModel.thisTimeCorrect {
+                color = UIColor.green
+            } else {
+                color = UIColor.red
+            }
+        case .all:
+            color = UIColor.green
+        }
+        node.layer.backgroundColor = color.cgColor
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -71,8 +106,8 @@ extension GridView {
         guard let node = findCurrentSelectedNode(position) else {
             return
         }
-//        print("\(x)--\(y)--\(l.text)")
-        changeNodeStatus(node: node, selected: true)
+        changeNodeStatus(node: node, correct: .not)
+        
         addSelectedNode(node)
         viewModel.addNodePosition(position)
     }
@@ -90,33 +125,66 @@ extension GridView {
         }
         return value
     }
-    func checkSelectedWordCorrect() -> Bool {
-        guard let sourceWord = sourceWord, let selectedWordValue = generateSelectedValue(), let selectedWord = viewModel.generateSelectedWord(by: selectedWordValue), selectedWord == sourceWord.word_locations else {
-            return false
-        }
-        return true
+    
+    func resetStatusCorrect() {
+        UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
+            self.selectedCharacterNodes.forEach {
+                self.changeNodeStatus(node: $0, correct: .all)
+            }
+        }, completion: { finished in
+            self.clearAllNodes()
+            self.viewModel.next()
+            self.viewModel.showCorrectTargetWord()
+        })
+    }
+    
+    func resetCharacterNodeColor(_ node: UILabel) {
+        node.layer.backgroundColor = UIColor.gray.cgColor
     }
     
     func resetStatus() {
-        viewModel.selectedCharacterPoints.removeAll()
         UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
             self.selectedCharacterNodes.forEach {
-                self.changeNodeStatus(node: $0, selected: false)
+                self.resetCharacterNodeColor($0)
             }
         }, completion: { finished in
-            self.selectedCharacterNodes.removeAll()
+            self.clearAllNodes()
         })
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let _ = sourceWord else {
+        guard let _ = sourceWord, let selectedWordValue = generateSelectedValue() else {
             return
         }
         
-        if checkSelectedWordCorrect() {
-            //update word
+        switch viewModel.checkSelectedWordCorrect(selectedWordValue) {
+        case .not:
+            resetStatus()
+        case .part:
+            setParticalNodesColor()
+            break
+        case .all:
+            resetStatusCorrect()
+//            viewModel.showCorrectTargetWord()
+//            viewModel.next()
         }
-        resetStatus()
+    }
+    
+    func setParticalNodesColor() {
+        let thisCorrect = viewModel.thisTimeCorrect ? WordCorrect.part : .not
+        UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
+            self.selectedCharacterNodes.forEach {
+                self.changeNodeStatus(node: $0, correct: thisCorrect)
+            }
+        }, completion: { finished in
+            self.clearAllNodes()
+        })
+        
+    }
+    
+    private func clearAllNodes() {
+        selectedCharacterNodes.removeAll()
+        viewModel.selectedCharacterPoints.removeAll()
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D03E5CE20F06DE300FFD5BD /* LoadWordAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D03E5CD20F06DE300FFD5BD /* LoadWordAPIManager.swift */; };
 		3D18FB0D20EF6DB300E42D9D /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D18FB0C20EF6DB300E42D9D /* GameViewModel.swift */; };
 		3D18FB0F20EF6DCA00E42D9D /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D18FB0E20EF6DCA00E42D9D /* GridView.swift */; };
 		3D18FB1220EF6E0D00E42D9D /* Word.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D18FB1120EF6E0D00E42D9D /* Word.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D03E5CD20F06DE300FFD5BD /* LoadWordAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadWordAPIManager.swift; sourceTree = "<group>"; };
 		3D18FB0C20EF6DB300E42D9D /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		3D18FB0E20EF6DCA00E42D9D /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		3D18FB1120EF6E0D00E42D9D /* Word.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Word.swift; sourceTree = "<group>"; };
@@ -82,6 +84,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D03E5CC20F06DBC00FFD5BD /* NetworkLayer */ = {
+			isa = PBXGroup;
+			children = (
+				3D03E5CD20F06DE300FFD5BD /* LoadWordAPIManager.swift */,
+			);
+			path = NetworkLayer;
+			sourceTree = "<group>";
+		};
 		3D18FB1020EF6E0200E42D9D /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -93,8 +103,8 @@
 		3D18FB1320EF80D000E42D9D /* View */ = {
 			isa = PBXGroup;
 			children = (
-				3D18FB0C20EF6DB300E42D9D /* GameViewModel.swift */,
 				3D2BB16920EF19E6005ED93F /* GameViewController.swift */,
+				3D18FB0C20EF6DB300E42D9D /* GameViewModel.swift */,
 				3D18FB0E20EF6DCA00E42D9D /* GridView.swift */,
 				3D18FB1420EF813500E42D9D /* GridViewModel.swift */,
 			);
@@ -125,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				3D2BB16720EF19E6005ED93F /* AppDelegate.swift */,
+				3D03E5CC20F06DBC00FFD5BD /* NetworkLayer */,
 				3D18FB1320EF80D000E42D9D /* View */,
 				3D18FB1020EF6E0200E42D9D /* Model */,
 				3D2BB16B20EF19E6005ED93F /* Main.storyboard */,
@@ -286,6 +297,7 @@
 			files = (
 				3D18FB1520EF813500E42D9D /* GridViewModel.swift in Sources */,
 				3D18FB0F20EF6DCA00E42D9D /* GridView.swift in Sources */,
+				3D03E5CE20F06DE300FFD5BD /* LoadWordAPIManager.swift in Sources */,
 				3D18FB0D20EF6DB300E42D9D /* GameViewModel.swift in Sources */,
 				3D18FB1220EF6E0D00E42D9D /* Word.swift in Sources */,
 				3D2BB16A20EF19E6005ED93F /* GameViewController.swift in Sources */,

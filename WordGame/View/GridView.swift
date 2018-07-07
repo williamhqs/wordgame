@@ -14,7 +14,7 @@ final class GridView: UIView {
     
     var viewModel = GridViewModel()
     var width: CGFloat = 0
-    let space: CGFloat = 10
+    let space: CGFloat = 15
     
     var sourceWord: Word? {
         didSet {
@@ -58,7 +58,7 @@ final class GridView: UIView {
             var la = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
                 let b = UILabel(frame: CGRect(x: space + CGFloat(xOffset) * (width + space), y: space + CGFloat(yOffset) * (width + space), width: width, height: width))
-                b.layer.backgroundColor = UIColor.gray.cgColor
+                b.layer.backgroundColor = UIColor.darkGray.cgColor
                 b.textColor = UIColor.white
                 b.textAlignment = .center
                 b.font = UIFont.systemFont(ofSize: 25.0)
@@ -81,8 +81,12 @@ extension GridView {
     }
     
     private func nodeLocation(_ point: CGPoint) -> (Int, Int){
-        let x = Int(((point.x - space) / (width + space)).rounded(.down))
-        let y = Int(((point.y - space) / (width + space)).rounded(.down))
+        var x = Int(((point.x - space) / (width + space)).rounded(.down))
+        var y = Int(((point.y - space) / (width + space)).rounded(.down))
+        
+        if x < 0 { x = 0 }
+        if y < 0 { y = 0 }
+        
         return (x,y)
     }
     
@@ -117,7 +121,12 @@ extension GridView {
         }
         let touchlocation = touch.location(in: self)
         let position = nodeLocation(touchlocation)
+        
         guard let node = findCurrentSelectedNode(position) else {
+            return
+        }
+        
+        guard node.frame.contains(touchlocation) else {
             return
         }
         changeNodeStatus(node: node, correct: .not)
@@ -153,12 +162,12 @@ extension GridView {
     }
     
     func resetCharacterNodeColor(_ node: UILabel) {
-        node.layer.backgroundColor = UIColor.gray.cgColor
+        node.layer.backgroundColor = UIColor.darkGray.cgColor
     }
     
     func resetStatus() {
         UIView.animate(withDuration: 1.0, delay: 0, options: .allowUserInteraction, animations: {
-            self.selectedCharacterNodes.forEach {
+            self.charaterNodes.flatMap{$0}.forEach {
                 self.resetCharacterNodeColor($0)
             }
         }, completion: { finished in

@@ -65,9 +65,9 @@ final class GridView: UIView {
             return
         }
         let verticalStack   = UIStackView()
-        verticalStack.axis  = UILayoutConstraintAxis.vertical
-        verticalStack.distribution  = UIStackViewDistribution.fillEqually
-        verticalStack.alignment = UIStackViewAlignment.fill
+        verticalStack.axis  = .vertical
+        verticalStack.distribution  = .fillEqually
+        verticalStack.alignment = .fill
         verticalStack.spacing   = gridSpace
         sourceWord.characterGrid.enumerated().forEach { (yOffset, element) in
             var labels = [UILabel]()
@@ -77,9 +77,9 @@ final class GridView: UIView {
                 labels.append(node)
             })
             let horizontalStack   = UIStackView(arrangedSubviews: labels)
-            horizontalStack.axis  = UILayoutConstraintAxis.horizontal
-            horizontalStack.distribution  = UIStackViewDistribution.fillEqually
-            horizontalStack.alignment = UIStackViewAlignment.fill
+            horizontalStack.axis  = .horizontal
+            horizontalStack.distribution  = .fillEqually
+            horizontalStack.alignment = .fill
             horizontalStack.spacing   = gridSpace
             verticalStack.addArrangedSubview(horizontalStack)
             charaterNodes.append(labels)

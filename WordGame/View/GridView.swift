@@ -14,7 +14,10 @@ final class GridView: UIView {
     
     var viewModel = GridViewModel()
     var width: CGFloat = 0
-    let space: CGFloat = 15
+    var width1: CGFloat = 0
+    var virtalSpace: CGFloat = 10
+    var gridSpace: CGFloat = 2
+    var currentColor = UIColor.darkGray
     
     var sourceWord: Word? {
         didSet {
@@ -36,7 +39,7 @@ final class GridView: UIView {
         viewModel.newSourceWord = { [unowned self] word in
             self.sourceWord = word
         }
-        self.backgroundColor = UIColor.darkGray
+        self.backgroundColor = UIColor.brown
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -52,13 +55,17 @@ final class GridView: UIView {
         charaterNodes.removeAll()
         
         let count = sourceWord.character_grid.count
-        width = (UIScreen.main.bounds.width - space * CGFloat(count + 1))/CGFloat(sourceWord.character_grid.count)
-        frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: CGFloat(count) * (width + space) + space)
+        
+        width = (UIScreen.main.bounds.width - gridSpace * CGFloat(count + 1))/CGFloat(sourceWord.character_grid.count)
+        width1 = UIScreen.main.bounds.width/CGFloat(count)
+        virtalSpace = width1/3.0
+//        frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: CGFloat(count) * (width + space) + space)
+        frame = CGRect(x: 0, y: 200, width: UIScreen.main.bounds.width, height: CGFloat(count) * width1)
         sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
             var la = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
-                let b = UILabel(frame: CGRect(x: space + CGFloat(xOffset) * (width + space), y: space + CGFloat(yOffset) * (width + space), width: width, height: width))
-                b.layer.backgroundColor = UIColor.darkGray.cgColor
+                let b = UILabel(frame: CGRect(x: gridSpace + CGFloat(xOffset) * (width + gridSpace), y: gridSpace + CGFloat(yOffset) * (width + gridSpace), width: width, height: width))
+                b.layer.backgroundColor = currentColor.cgColor
                 b.textColor = UIColor.white
                 b.textAlignment = .center
                 b.font = UIFont.systemFont(ofSize: 25.0)
@@ -74,15 +81,9 @@ final class GridView: UIView {
 // MARK: - Touches
 extension GridView {
     
-    private func nodeLocation1(_ point: CGPoint) -> (Int, Int){
-        let x = Int(((point.x - space) / (width + space)).rounded(.down))
-        let y = Int(((point.y - space) / (width + space)).rounded(.down))
-        return (x,y)
-    }
-    
     private func nodeLocation(_ point: CGPoint) -> (Int, Int){
-        var x = Int(((point.x - space) / (width + space)).rounded(.down))
-        var y = Int(((point.y - space) / (width + space)).rounded(.down))
+        var x = Int(((point.x - gridSpace) / (width + gridSpace)).rounded(.down))
+        var y = Int(((point.y - gridSpace) / (width + gridSpace)).rounded(.down))
         
         if x < 0 { x = 0 }
         if y < 0 { y = 0 }
@@ -125,8 +126,9 @@ extension GridView {
         guard let node = findCurrentSelectedNode(position) else {
             return
         }
-        
-        guard node.frame.contains(touchlocation) else {
+        let f = node.frame
+        let frame = CGRect(x: f.minX + virtalSpace, y: f.minY + virtalSpace, width: f.width - virtalSpace, height: f.height - virtalSpace)
+        guard frame.contains(touchlocation) else {
             return
         }
         changeNodeStatus(node: node, correct: .not)
@@ -162,7 +164,7 @@ extension GridView {
     }
     
     func resetCharacterNodeColor(_ node: UILabel) {
-        node.layer.backgroundColor = UIColor.darkGray.cgColor
+        node.layer.backgroundColor = currentColor.cgColor
     }
     
     func resetStatus() {
@@ -179,7 +181,6 @@ extension GridView {
         guard let _ = sourceWord, let selectedWordValue = generateSelectedValue() else {
             return
         }
-        
         switch viewModel.checkSelectedWordCorrect(selectedWordValue) {
         case .not:
             resetStatus()

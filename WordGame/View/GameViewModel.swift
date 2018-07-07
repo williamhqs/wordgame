@@ -24,7 +24,7 @@ class GameViewModel {
             guard error == nil, let words = words else {
                 //TODO: Deal with error
                 return
-            }
+            } 
             self.words = words
         }
     }

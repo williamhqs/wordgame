@@ -8,13 +8,6 @@
 
 import Foundation
 
-enum NetworkError: String, Error {
-    case noData = "There's no data"
-    case error1 = "xxxx error1"
-    case error2  = "xxxx error2"
-    case unknowError  = "unknow error"
-}
-
 struct LoadWordAPIManager {
     func startLoadWords(completion: @escaping ([Word]?, NetworkError?)-> Void) {
         let session = URLSession(configuration: .default)

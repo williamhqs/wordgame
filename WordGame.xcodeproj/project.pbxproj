@@ -19,6 +19,7 @@
 		3D2BB17220EF19E9005ED93F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D2BB17020EF19E9005ED93F /* LaunchScreen.storyboard */; };
 		3D2BB17D20EF19E9005ED93F /* WordGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2BB17C20EF19E9005ED93F /* WordGameTests.swift */; };
 		3D2BB18820EF19E9005ED93F /* WordGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2BB18720EF19E9005ED93F /* WordGameUITests.swift */; };
+		3DCB145E20F1051E00CF01F7 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCB145D20F1051E00CF01F7 /* NetworkError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		3D2BB18320EF19E9005ED93F /* WordGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D2BB18720EF19E9005ED93F /* WordGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordGameUITests.swift; sourceTree = "<group>"; };
 		3D2BB18920EF19E9005ED93F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DCB145D20F1051E00CF01F7 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				3D03E5CD20F06DE300FFD5BD /* LoadWordAPIManager.swift */,
+				3DCB145D20F1051E00CF01F7 /* NetworkError.swift */,
 			);
 			path = NetworkLayer;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D18FB1520EF813500E42D9D /* GridViewModel.swift in Sources */,
+				3DCB145E20F1051E00CF01F7 /* NetworkError.swift in Sources */,
 				3D18FB0F20EF6DCA00E42D9D /* GridView.swift in Sources */,
 				3D03E5CE20F06DE300FFD5BD /* LoadWordAPIManager.swift in Sources */,
 				3D18FB0D20EF6DB300E42D9D /* GameViewModel.swift in Sources */,

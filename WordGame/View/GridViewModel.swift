@@ -16,9 +16,8 @@ enum WordCorrect {
 
 final class GridViewModel {
     
-    private var currentIndex: Int = -1
-    private var checkedWords1 = [String]()
-    var isCorrect: WordCorrect = .not
+    private var currentIndex: Int = 1
+    private var correctWords = [String]()
     var thisTimeCorrect = false
     var selectedCharacterPoints = [String]()
     
@@ -32,7 +31,8 @@ final class GridViewModel {
     var nextWordLoad: ((Word) -> Void)?
     var currentCorrectTargeWord: ((String) -> Void)?
     
-    func generateSelectedWordKey(_ position:(Int, Int)) -> String {
+    // MARK: - Private Methods
+    private func generateSelectedWordKey(_ position:(Int, Int)) -> String {
         return String(position.0)+","+String(position.1)+","
     }
     
@@ -45,42 +45,13 @@ final class GridViewModel {
         return selectedWordKey
     }
     
-    func addNodePosition(_ position: (Int, Int)) {
-        let locationString = generateSelectedWordKey(position)
-        addSelectedNodePoints(locationString)
-    }
-    
-    func generateSelectedWord(by selectedWordValue: String) -> [String:String]? {
+    private func generateSelectedWord(by selectedWordValue: String) -> [String:String]? {
         guard let selectedWordKey = generateSelectedKey() else {
             return .none
         }
         return [selectedWordKey:selectedWordValue]
     }
     
-    func checkSelectedWordCorrect(_ selectedWordValue: String) -> WordCorrect{
-        let currectWord = words[currentIndex]
-        let key = generateSelectedKey()
-        if currectWord.word_locations[key!] == selectedWordValue {
-            if !checkedWords1.contains(selectedWordValue) {
-                thisTimeCorrect = true
-                checkedWords1.append(selectedWordValue)
-            } else {
-                thisTimeCorrect = false
-            }
-        } else {
-            if checkedWords1.count > 0 {
-                return .part
-            }
-            return .not
-        }
-        if checkedWords1.count == currectWord.word_locations.count {
-            checkedWords1.removeAll()
-            isCorrect = .all
-        } else {
-            isCorrect = .part
-        }
-        return isCorrect
-    }
     
     private func addSelectedNodePoints(_ locationString: String) {
         if !selectedCharacterPoints.contains(locationString) {
@@ -88,11 +59,39 @@ final class GridViewModel {
         }
     }
     
+    // MARK: - Public Methods
+    func addNodePosition(_ position: (Int, Int)) {
+        let locationString = generateSelectedWordKey(position)
+        addSelectedNodePoints(locationString)
+    }
+    
+    func checkSelectedWordCorrect(_ selectedWordValue: String) -> WordCorrect{
+        let currectWord = words[currentIndex]
+        let key = generateSelectedKey()
+        if currectWord.word_locations[key!] == selectedWordValue {
+            if !correctWords.contains(selectedWordValue) {
+                thisTimeCorrect = true
+                correctWords.append(selectedWordValue)
+            } else {
+                thisTimeCorrect = false
+            }
+        } else {
+            thisTimeCorrect = false
+            return correctWords.count > 0 ? .part : .not
+        }
+        
+        if correctWords.count == currectWord.word_locations.count {
+            correctWords.removeAll()
+            return .all
+        } else {
+            return .part
+        }
+    }
+    
     func next() {
         currentIndex += 1
-        guard currentIndex < words.count || currentIndex == -1 else {
+        if currentIndex >= words.count || currentIndex == -1 {
             currentIndex = 0
-            return
         }
         newSourceWord?(words[currentIndex])
         nextWordLoad?(words[currentIndex])

@@ -40,6 +40,7 @@ class GameViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
+    // MARK: - Private Methods
     private func configureWordInformations(word: Word?) {
         self.sourceLanguage.text = word?.source_language
         self.targetLanguage.text = word?.target_language

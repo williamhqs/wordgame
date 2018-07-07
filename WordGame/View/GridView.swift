@@ -64,33 +64,32 @@ final class GridView: UIView {
         guard let sourceWord = sourceWord else {
             return
         }
-        let stackView1   = UIStackView()
-        stackView1.axis  = UILayoutConstraintAxis.vertical
-        stackView1.distribution  = UIStackViewDistribution.fillEqually
-        stackView1.alignment = UIStackViewAlignment.fill
-        stackView1.spacing   = gridSpace
+        let verticalStack   = UIStackView()
+        verticalStack.axis  = UILayoutConstraintAxis.vertical
+        verticalStack.distribution  = UIStackViewDistribution.fillEqually
+        verticalStack.alignment = UIStackViewAlignment.fill
+        verticalStack.spacing   = gridSpace
         sourceWord.character_grid.enumerated().forEach { (yOffset, element) in
             var labels = [UILabel]()
             element.enumerated().forEach({ (xOffset, element) in
                 let node = self.setupCharacterNode(frame: .zero)
                 node.text = element
                 labels.append(node)
-//                addSubview(node)
             })
-            let stackView   = UIStackView(arrangedSubviews: labels)
-            stackView.axis  = UILayoutConstraintAxis.horizontal
-            stackView.distribution  = UIStackViewDistribution.fillEqually
-            stackView.alignment = UIStackViewAlignment.fill
-            stackView.spacing   = gridSpace
-            stackView1.addArrangedSubview(stackView)
+            let horizontalStack   = UIStackView(arrangedSubviews: labels)
+            horizontalStack.axis  = UILayoutConstraintAxis.horizontal
+            horizontalStack.distribution  = UIStackViewDistribution.fillEqually
+            horizontalStack.alignment = UIStackViewAlignment.fill
+            horizontalStack.spacing   = gridSpace
+            verticalStack.addArrangedSubview(horizontalStack)
             charaterNodes.append(labels)
         }
-        self.addSubview(stackView1)
-        stackView1.translatesAutoresizingMaskIntoConstraints = false
-        stackView1.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: gridSpace).isActive = true
-        stackView1.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -gridSpace).isActive = true
-        stackView1.topAnchor.constraint(equalTo: self.topAnchor, constant: gridSpace).isActive = true
-        stackView1.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -gridSpace).isActive = true
+        self.addSubview(verticalStack)
+        verticalStack.translatesAutoresizingMaskIntoConstraints = false
+        verticalStack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: gridSpace).isActive = true
+        verticalStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -gridSpace).isActive = true
+        verticalStack.topAnchor.constraint(equalTo: self.topAnchor, constant: gridSpace).isActive = true
+        verticalStack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -gridSpace).isActive = true
     }
     
     private func setupCharacterNode(frame: CGRect) -> UILabel {

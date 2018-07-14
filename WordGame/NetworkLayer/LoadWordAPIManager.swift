@@ -11,7 +11,7 @@ import Foundation
 struct LoadWordAPIManager {
     func startLoadWords(completion: @escaping ([Word]?, NetworkError?)-> Void) {
         let session = URLSession(configuration: .default)
-        let req = URLRequest(url: URL(string: "https://s3.amazonaws.com/duolingo-data/s3/js2/find_challenges.txt")!)
+        let req = URLRequest(url: URL(string: "")!)
         session.dataTask(with: req) { (data, response, error) in
             guard error == nil else {
                 completion(.none, .error1)
